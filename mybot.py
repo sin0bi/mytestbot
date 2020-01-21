@@ -13,14 +13,12 @@ import ssl
 
 bot = telebot.TeleBot(config.TOKEN)
 
-# https://api.telegram.org/bot<token>/sendMessage?chat_id=<chat_id>&text=<Enter your text here>
-# https://api.thecatapi.com/v1/images/search?mime_type=jpg     #картинки с котиками.
 
 @bot.message_handler(commands=['start'])  # работает
 def handler_start(message):
     user_markup = types.ReplyKeyboardMarkup(True)
-    user_markup.row('Переводчик', 'Контакты', 'Убрать кнопки')
-    bot.send_message(message.from_user.id, 'Привет, я Genesis-бот', reply_markup=user_markup)
+    user_markup.row('Переводчик', 'Конвертер руб/usd', 'Убрать кнопки')
+    bot.send_message(message.from_user.id, 'Привет, я Genesis-бот. Я многое уже умею, например, я могу перевести любую фразу с русского на английский, могу конвертировать руб/usd, могу выдать картинки с котикаме и пёсикаме по команде /cat или /dog', reply_markup=user_markup)
     # bot.forward_message(chat_id=271249491, from_chat_id=message.chat.id, message_id=message.message_id)  # пересылка мессаги
 
 
@@ -56,8 +54,8 @@ def send_location(message):
 
 @bot.message_handler(commands=['sticker'])  # работает
 def send_sticker(message):
-    # bot.send_sticker(message.chat.id, 'CAADAgADCAsAAi8P8AZv5AABGV_1eF8WBA')
-    bot.send_sticker(message.chat.id, 'CAADAgADRAADq1fEC1nUzBZy6Z-0FgQ')
+    bot.send_sticker(message.chat.id, 'CAADAgADCAsAAi8P8AZv5AABGV_1eF8WBA')
+    #bot.send_sticker(message.chat.id, 'CAADAgADRAADq1fEC1nUzBZy6Z-0FgQ')
 
 
 @bot.message_handler(commands=['photo'])  # работает
@@ -99,29 +97,17 @@ def geophone(message):
     # keyboard.row('Дай номер телефончега') другой способ, просто кнопка с текстом
     # bot.send_message(message.from_user.id, "message.text", reply_markup=keyboard)
 
-# @bot.message_handler(content_types=["text"]) # работает
-# def repeat_all_messages(message):
-#     #bot.reply_to(message, message.text)
-#     #bot.send_message(message.from_user.id, message.text) # надо пробануть
-#     bot.send_message(message.chat.id, message.text)
 
-
-# @bot.message_handler(content_types=["text"])  # работает
-# def handler_message(message):
-#     # bot.send_message(message.chat.id, message.text)
-#     json = translate_me(message.text)
-#     bot.send_message(message.chat.id, ''.join(json['text']))
-
-# @bot.message_handler(commands=['convert'])  # работает, Реплай Клава
-# def convert(message):
-#     # keyboard = types.ReplyKeyboardMarkup(True, row_width=1)
-#     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-#     button1 = types.KeyboardButton(text='Хочу перевести рубли в доллары')
-#     button2 = types.KeyboardButton(text='Хочу перевести доллары в рубли')
-#     keyboard.add(button1)
-#     keyboard.add(button2)
-#     # keyboard.add(button2)
-#     bot.send_message(message.chat.id, 'Что будем делать?', reply_markup=keyboard)
+@bot.message_handler(commands=['convert'])  # работает, ReplyKeyboard
+def convert(message):
+    # keyboard = types.ReplyKeyboardMarkup(True, row_width=1)
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button1 = types.KeyboardButton(text='Хочу перевести рубли в доллары')
+    button2 = types.KeyboardButton(text='Хочу перевести доллары в рубли')
+    keyboard.add(button1)
+    keyboard.add(button2)
+    # keyboard.add(button2)
+    bot.send_message(message.chat.id, 'Что будем делать?', reply_markup=keyboard)
 
 
 @bot.message_handler(commands=['cat'])
@@ -138,17 +124,24 @@ def  cat(message):
     res = requests.get(url)
     data = res.json()
     cat = data[0]['url']
-
     bot.send_photo(message.chat.id, cat)
 
 
-@bot.message_handler(commands=['convert'])  # работает, Инлайн Клава
-def convert(message):
-    keyboard = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text='Sinobi', url='http://google.com')
-    button2 = types.InlineKeyboardButton(text='Robisho', url='t.me/Robish0')
-    keyboard.add(button1, button2)
-    bot.send_message(message.chat.id, 'Кому будем писать?', reply_markup=keyboard)
+@bot.message_handler(commands=['dog'])
+def getcat(message):
+    keyboard = types.ReplyKeyboardMarkup(True, False)
+    keyboard.row('Получить пёсика')
+    bot.send_message(message.chat.id, 'Привет! Нажми кнопарик ниже.', reply_markup=keyboard)
+
+
+@bot.message_handler(regexp="Получить пёсика")
+def  cat(message):
+    # картинки с собачками
+    url = 'https://api.thedogapi.com/v1/images/search?mime_type=jpg'
+    res = requests.get(url)
+    data = res.json()
+    dog = data[0]['url']
+    bot.send_photo(message.chat.id, dog)
 
 
 @bot.message_handler(content_types=["text"])
@@ -159,10 +152,10 @@ def text(message):
     elif message.text == 'Хочу перевести доллары в рубли':
         bsm = bot.send_message(message.chat.id, 'Сколько долларов хотите перевести?')
         bot.register_next_step_handler(bsm, next_rub)
-    elif message.text == 'Контакты':
-        bot.send_message(message.from_user.id, 'Наши контакты очень известны')
+    elif message.text == 'Конвертер руб/usd':
+        bot.send_message(message.from_user.id, 'Командой /convert можете начать конвертацию')
     elif message.text == 'Переводчик':
-        bot.send_message(message.from_user.id, 'Это функция-транслейтер', )
+        bot.send_message(message.from_user.id, 'Это функция-транслейтер, напишите какую-нибудь фразу на русском языке и я переведу это на английский', )
     elif message.text == 'Убрать кнопки':
         # keyboard = types.ReplyKeyboardMarkup(True)
         # bot.send_message(message.from_user.id, 'Теперь без кнопок', reply_markup=keyboard)
@@ -213,31 +206,10 @@ def callback_inline(call):
             bot.send_message(call.message.chat.id, "Вы были зарегестрированы!")
 
 
-# @bot.message_handler(content_types=["text"])  # работает
-# def handler_message(message):
-#     if message.text == 'Контакты':
-#         bot.send_message(message.from_user.id, 'Наши контакты очень известны')
-#     elif message.text == 'Переводчик':
-#         bot.send_message(message.from_user.id, 'Это фунция транслейтер', )
-#     elif message.text == 'Убрать кнопки':
-#         # keyboard = types.ReplyKeyboardMarkup(True)
-#         # bot.send_message(message.from_user.id, 'Теперь без кнопок', reply_markup=keyboard)
-#         hide_keyboard = types.ReplyKeyboardRemove()
-#         bot.send_message(message.from_user.id, '*', reply_markup=hide_keyboard)
-#     else:
-#         json = translate_me(message.text)  # перевод введенного текста
-#         bot.send_message(message.chat.id, ''.join(json['text']))
-
-
-# if __name__ == '__main__':
-while True:
-    try:
-        bot.polling(none_stop=True)
-    except Exception as ex:
-        print(ex)
-        time.sleep(10)
-
-    # bot.polling(none_stop=True)
-    # bot.polling()  # тоже работает
-
-# bot.polling(none_stop=True)
+if __name__ == '__main__':
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as ex:
+            print(ex)
+            time.sleep(10)
