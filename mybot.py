@@ -167,11 +167,11 @@ def text(message):
 
 
 def  next_rub(message):
-    bot.send_message(message.chat.id, 'Сумма в рублях: ' + str(int(message.text) * rate()))
+    bot.send_message(message.chat.id, 'Сумма в рублях: ' + str(float(message.text) * rate()))
 
 
 def next_usd(message):
-    bot.send_message(message.chat.id, 'Сумма в доларах: ' + str(int(message.text) / rate()))
+    bot.send_message(message.chat.id, 'Сумма в доларах: ' + str(float(message.text) / rate()))
 
 
 def rate():  # курс руб к баксу
