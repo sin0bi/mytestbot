@@ -18,7 +18,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def handler_start(message):
     user_markup = types.ReplyKeyboardMarkup(True)
     user_markup.row('Переводчик', 'Конвертер руб/usd', 'Убрать кнопки')
-    bot.send_message(message.from_user.id, 'Привет, я Genesis-бот. Я многое уже умею, например, я могу перевести любую фразу с русского на английский, могу конвертировать руб/usd, могу выдать картинки с котикаме и пёсикаме по команде /cat или /dog', reply_markup=user_markup)
+    bot.send_message(message.from_user.id, 'Привет, я Genesis-бот. Я уже многое умею, например, я могу перевести любую фразу с русского на английский, могу конвертировать руб/usd, могу выдать картинки с котикаме и пёсикаме по команде /cat или /dog', reply_markup=user_markup)
     # bot.forward_message(chat_id=271249491, from_chat_id=message.chat.id, message_id=message.message_id)  # пересылка мессаги
 
 
@@ -36,7 +36,7 @@ def handler_help(message):
 
 @bot.message_handler(commands=['about'])  # работает
 def handler_about(message):
-    bot.send_message(message.chat.id, 'Меня создали в Кибердайн Систем, теперь я твой помощник в этом цифровом мире.')
+    bot.send_message(message.chat.id, 'Меня создали в Кибердайн Систем, теперь я буду следить за тобой всегда!')
 
 
 @bot.message_handler(commands=['contact'])  # работает
@@ -131,7 +131,7 @@ def  cat(message):
 def getcat(message):
     keyboard = types.ReplyKeyboardMarkup(True, False)
     keyboard.row('Получить пёсика')
-    bot.send_message(message.chat.id, 'Привет! Нажми кнопарик ниже.', reply_markup=keyboard)
+    bot.send_message(message.chat.id, 'Привет! Нажми кнопочку ниже.', reply_markup=keyboard)
 
 
 @bot.message_handler(regexp="Получить пёсика")
