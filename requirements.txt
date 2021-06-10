@@ -23,7 +23,7 @@ constantly==15.1.0
 cryptography==2.7
 cssselect==1.1.0
 cycler==0.10.0
-Django==1.9
+Django==2.2.24
 esprima==4.0.1
 fake-useragent==0.1.11
 hyperlink==19.0.0
